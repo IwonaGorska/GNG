@@ -18,8 +18,6 @@ public class GrowingNeuralGas implements Serializable {
     private static final long serialVersionUID = 2L;
 
     Random generator;
-    // The dimensionality of signals
-    private final int d;
     //The number of signals processed so far
     private int signalsProcessed;
     //The number of iterations to proceed
@@ -32,10 +30,6 @@ public class GrowingNeuralGas implements Serializable {
     private int edgeLifetime;
     //If the number of input signals so far is an integer multiple of lambda, insert a new neuron
     private int lambda;
-    //Decrease error variables by multiplying them with alpha during inserting a new neuron
-    private double alpha;
-    //Decrease all error variables by multiply them with beta
-    private double beta;
     //Range of positions for the square - in the future it can be a set of available points in a file
     /*private double squareStartX;
     private double squareStartY;
@@ -60,14 +54,11 @@ public class GrowingNeuralGas implements Serializable {
      *              during inserting a new neuron.
      * @param beta decrease all error variables by multiply them with beta.
      */
-    public GrowingNeuralGas(int d, double epsBest, double epsNeighbor, int edgeLifetime, int lambda, double alpha, double beta, int maxIterations, double squareStartX, double squareStartY, double squareEndX, double squareEndY) {
-        this.d = d;
+    public GrowingNeuralGas(double epsBest, double epsNeighbor, int edgeLifetime, int lambda, int maxIterations, double squareStartX, double squareStartY, double squareEndX, double squareEndY) {
         this.epsBest = epsBest;
         this.epsNeighbor = epsNeighbor;
         this.edgeLifetime = edgeLifetime;
         this.lambda = lambda;
-        this.alpha = alpha;
-        this.beta = beta;
         this.maxIterations = maxIterations;
         this.signalsProcessed = 0;
 	    /*this.squareStartX = squareStartX;
@@ -333,140 +324,5 @@ public class GrowingNeuralGas implements Serializable {
     		
     	}
     }
-
-    /*
-    public void update(double[] x) {
-        t++;
-
-        if (neurons.size() < 2) {
-           // neurons.add(new Neuron(x.clone()));
-            return;
-        }
-
-        // Find the nearest (s1) and second nearest (s2) neuron to x.
-        neurons.stream().parallel().forEach(neuron -> neuron.distance(x));
-
-        Arrays.fill(top2, null);
-        HeapSelect<Neuron> heap = new HeapSelect<>(top2);
-        for (Neuron neuron : neurons) {
-            heap.add(neuron);
-        }
-
-        Neuron s1 = top2[1];
-        Neuron s2 = top2[0];
-
-        // update s1
-        s1.update(x, epsBest);
-        // update local counter of squared distance
-        s1.counter += s1.distance * s1.distance;
-        // Increase the edge of all edges emanating from s1./increase the age
-        s1.age();
-
-        boolean addEdge = true;
-        for (Edge edge : s1.edges) {
-            // Update s1's direct topological neighbors towards x.
-            Neuron neighbor = edge.neighbor;
-            neighbor.update(x, epsNeighbor);
-
-            // Set the age to zero if s1 and s2 are already connected.
-            if (neighbor == s2) {
-                edge.age = 0;
-                s2.setEdgeAge(s1, 0);
-                addEdge = false;
-            }
-        }
-
-        // Connect s1 and s2 if they are not neighbor yet.
-        if (addEdge) {
-            s1.addEdge(s2);
-            s2.addEdge(s1);
-            s2.update(x, epsNeighbor);
-        }
-
-        // Remove edges with an age larger than the threshold
-        for (Iterator<Edge> iter = s1.edges.iterator(); iter.hasNext();) {
-            Edge edge = iter.next();
-            if (edge.age > edgeLifetime) {
-                iter.remove();
-
-                Neuron neighbor = edge.neighbor;
-                neighbor.removeEdge(s1);
-                // Remove a neuron if it has no emanating edges
-                if (neighbor.edges.isEmpty()) {
-                    neurons.removeIf(neuron -> neuron == neighbor);
-                }
-            }
-        }
-
-        // Add a new neuron if the number of input signals processed so far
-        // is an integer multiple of lambda.
-        if (t % lambda == 0) {
-            // Determine the neuron with the maximum accumulated error.
-            Neuron q = neurons.get(0);
-            for (Neuron neuron : neurons) {
-                if (neuron.counter > q.counter) {
-                    q = neuron;
-                }
-            }
-
-            // Find the neighbor of q with the largest error variable.
-            Neuron f = q.edges.get(0).neighbor;
-            for (Edge edge : q.edges) {
-                if (edge.neighbor.counter > f.counter) {
-                    f = edge.neighbor;
-                }
-            }
-
-            // Decrease the error variables of q and f.
-            q.counter *= alpha;
-            f.counter *= alpha;
-
-            // Insert a new neuron halfway between q and f.
-            double[] w = new double[d];
-           // for (int i = 0; i < d; i++) {
-             //   w[i] += (q.w[i] + f.w[i]) / 2;
-            //}
-
-            //Neuron r = new Neuron(w, q.counter);
-            //neurons.add(r);
-
-            // Remove the connection (q, f) and add connections (q, r) and (r, f)
-            q.removeEdge(f);
-            f.removeEdge(q);
-            //q.addEdge(r);
-            //f.addEdge(r);
-            //r.addEdge(q);
-            //r.addEdge(f);
-        }
-
-        // Decrease all error variables.
-        for (Neuron neuron : neurons) {
-            neuron.counter *= beta;
-        }
-    }
-
-*/
-
-    /**
-     * Returns the neurons in the network.
-     * @return the neurons in the network.
-     *//*
-    public Neuron[] neurons() {
-        return neurons.toArray(new Neuron[neurons.size()]);
-    }*/
-
-    /*public double[] quantize(double[] x) {
-        neurons.stream().parallel().forEach(neuron -> neuron.distance(x));
-
-        Neuron bmu = neurons.get(0);
-        for (Neuron neuron : neurons) {
-            if (neuron.distance < bmu.distance) {
-                bmu = neuron;
-            }
-        }
-
-        return bmu.w;
-       
-    }*/
     
 }
