@@ -26,18 +26,40 @@ public class Neuron implements Serializable {
     //The distance between the neuron and an input signal.
     public double distance = Double.MAX_VALUE;
     //The local counter variable (e.g. the accumulated error, freshness, etc.)
-    public double counter;
+    public double error;
 
-    public Neuron(double x, double y, double counter) {
+    public Neuron(double x, double y, double error) {
         this.x = x;
         this.y = y;
-        this.counter = counter;
+        this.error = error;
         this.edges = new LinkedList<>();
     }
 
     public void addEdge(Neuron neighbor, int age) {
         edges.add(new Edge(neighbor, age));
     }
+    
+    public void removeEdge(Neuron neighbor) {
+        for (Iterator<Edge> iter = edges.iterator(); iter.hasNext();) {
+            Edge edge = iter.next();
+            if (edge.neighbor == neighbor) {
+                //iter.remove();
+                edges.remove(edges.indexOf(edge));
+                return;
+            }
+        }
+    }
+    
+    public void updateError() {
+        this.error += this.distance;
+    }
+    
+    /*public void updateEdgesAge(int deltaAge) {
+        for (Iterator<Edge> iter = edges.iterator(); iter.hasNext();) {
+            Edge edge = iter.next();
+            edge.age += deltaAge;
+        }
+    }*/
     
     /*
     //Updates the reference vector by w += eps * (x - w).

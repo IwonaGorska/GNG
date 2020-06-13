@@ -35,4 +35,8 @@ public class Edge implements Serializable {
         this.neighbor = neighbor;
         this.age = age;
     }
+    
+    public void increaseAge() {
+    	this.age += 1;
+    }
 }
