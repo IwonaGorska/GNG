@@ -1,2 +1,2 @@
 # GNG
-Growing neural gas implementation in python
+Growing neural gas (GNG) - neural network implementation in python
