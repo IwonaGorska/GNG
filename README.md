@@ -1,2 +1,2 @@
 # GNG
-Growing neural gas
+Growing neural gas implementation in python
